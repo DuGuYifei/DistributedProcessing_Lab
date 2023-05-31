@@ -1,30 +1,37 @@
 #include "monitor.h"
+#include "stdio.h"
 
-
-void monitor_init(Monitor *monitor) {
-    monitor->in = 0;
-    monitor->out = 0;
-    semaphore_init(&monitor->mutex, 1);
-    semaphore_init(&monitor->items, 0);
-    semaphore_init(&monitor->spaces, BUFFER_SIZE);
+void monitor_init(Monitor* monitor) {
+    binary_semaphore_init(&monitor->mutex, 1);
+    binary_semaphore_init(&monitor->condition, 0);
+    monitor->waiting = 0;
 }
 
-void monitor_produce(Monitor *monitor, int product){
-	semaphore_wait(&(monitor->spaces)); // wait there is space
-	semaphore_wait(&(monitor->mutex));
-	monitor->buffer[monitor->in] = product;
-	monitor->in = (monitor->in + 1) % BUFFER_SIZE;
-	semaphore_signal(&(monitor->mutex));
-	semaphore_signal(&(monitor->items)); // signal there is a product
+void monitor_enter(Monitor* monitor) {
+    binary_semaphore_wait(&monitor->mutex);
 }
 
-int monitor_consume(Monitor *monitor){
-	int product;
-	semaphore_wait(&(monitor->items)); // wait there is a product
-	semaphore_wait(&(monitor->mutex));
-	product = monitor->buffer[monitor->out];
-	monitor->out = (monitor->out + 1) % BUFFER_SIZE;
-	semaphore_signal(&(monitor->mutex));
-	semaphore_signal(&(monitor->spaces)); // signal there is a space
-	return product;
+void monitor_exit(Monitor* monitor) {
+    binary_semaphore_post(&monitor->mutex);
+}
+
+void monitor_wait(Monitor* monitor) {
+    monitor->waiting++;
+    binary_semaphore_post(&monitor->mutex);
+    binary_semaphore_wait(&monitor->condition);
+    monitor->waiting--;
+}
+
+void monitor_notify(Monitor* monitor) {
+    if (monitor->waiting > 0) {
+        binary_semaphore_post(&monitor->condition);
+    }
+}
+
+void monitor_notify_out_monitor(Monitor* monitor) {
+    if (monitor->waiting > 0) {
+        binary_semaphore_wait(&monitor->mutex);
+        binary_semaphore_post(&monitor->condition);
+        binary_semaphore_post(&monitor->mutex);
+    }
 }

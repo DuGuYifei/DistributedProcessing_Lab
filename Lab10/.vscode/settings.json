@@ -1,0 +1,11 @@
+{
+	"files.associations": {
+		"*.md": "markdown",
+		"msg.h": "c",
+		"*.tcc": "c",
+		"fstream": "c",
+		"iosfwd": "c",
+		"type_traits": "c",
+		"binary_semaphore.h": "c"
+	}
+}

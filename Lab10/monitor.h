@@ -1,20 +1,14 @@
-#include <pthread.h>
-#include "semaphore.h"
-#define BUFFER_SIZE 10
+#include "binary_semaphore.h"
 
+typedef struct Monitor{
+    binary_semaphore_t mutex;
+    binary_semaphore_t condition;
+    int waiting;
+} Monitor;
 
-typedef struct Monitor Monitor;
-struct Monitor{
-    int buffer[BUFFER_SIZE];
-    int in;
-    int out;
-    semaphore_t mutex;
-    semaphore_t items;
-    semaphore_t spaces;
-};
-
-void monitor_init(Monitor *m);
-
-void monitor_produce(Monitor *m, int product);
-
-int monitor_consume(Monitor *m);
+void monitor_init(Monitor* monitor);
+void monitor_enter(Monitor* monitor);
+void monitor_exit(Monitor* monitor);
+void monitor_wait(Monitor* monitor);
+void monitor_notify(Monitor* monitor);
+void monitor_notify_out_monitor(Monitor* monitor);
