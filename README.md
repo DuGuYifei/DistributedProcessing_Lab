@@ -2,7 +2,7 @@
 
 The liboratory is trying to learn distributed processing both in windows and linux.
 
-* Language: `C`
+* Language: `C`,`Java`
 * Additional: `makefile`
 
 1. Lab1&2: 
@@ -27,6 +27,14 @@ The liboratory is trying to learn distributed processing both in windows and lin
       1. new: WinProc to handle message
       2. old: directly check clipboard
    5. Message API, Window API, Clipboard API, Global Memory API
-5. Lab6:
-   1. Char program
+5. Lab6-8:
+   1. Chat program
    2. Repository: [Termichat](https://github.com/DuGuYifei/Termichat)
+6. Lab9:
+   1. Consumer and Producer
+   2. Java
+   3. Solve problem of : producer random produce A, B, C but suddenly all place in buffer are A, then consumer randomly pick B.
+7. Lab10:
+   1. C
+   2. Semaphore
+   3. Simulate monitor
